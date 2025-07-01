@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giải Mã Kho Báu - Game Mật Mã Học</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="treasure-icon">🏴‍☠️</div>
+            <h2>Đang tải trò chơi...</h2>
+            <div class="progress-bar">
+                <div id="loadingProgress" class="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#home">
+                <i class="fas fa-skull-crossbones"></i>
+                Giải Mã Kho Báu
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#home">Trang Chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#game">Trò Chơi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#leaderboard">Bảng Xếp Hạng</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <i class="fas fa-skull-crossbones"></i>
+                        Giải Mã Kho Báu
+                    </h1>
+                    <p class="hero-subtitle">Hành trình khám phá bí mật mật mã học cùng thám tử Smith</p>
+                    <div class="hero-description">
+                        <p>Hãy vào vai thám tử Smith trong cuộc phiêu lưu đầy thử thách, giải mã các thông điệp bí ẩn 
+                        được mã hóa bằng các thuật toán khác nhau để tìm ra kho báu huyền thoại!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registration Form -->
+            <div class="registration-section">
+                <div class="registration-card">
+                    <h3><i class="fas fa-user-plus"></i> Đăng Ký Thám Tử</h3>
+                    <form id="registrationForm">
+                        <div class="form-group">
+                            <label for="username">Tên Thám Tử:</label>
+                            <input type="text" id="username" name="username" required 
+                                   placeholder="Nhập tên thám tử của bạn...">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email (tùy chọn):</label>
+                            <input type="email" id="email" name="email" 
+                                   placeholder="Nhập email của bạn...">
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-play"></i>
+                            Bắt Đầu Cuộc Phiêu Lưu
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Game Section -->
+        <section id="game" class="section">
+            <div class="game-header">
+                <h2><i class="fas fa-gamepad"></i> Trò Chơi Giải Mã</h2>
+                <div class="player-stats" id="playerStats" style="display: none;">
+                    <div class="stat-item">
+                        <span class="stat-label">Thám Tử:</span>
+                        <span id="currentPlayerName" class="stat-value">Smith</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Điểm:</span>
+                        <span id="currentPlayerScore" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Level:</span>
+                        <span id="currentPlayerLevel" class="stat-value">1</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Levels Grid -->
+            <div id="levelsGrid" class="levels-grid">
+                <!-- Levels will be populated by JavaScript -->
+            </div>
+
+            <!-- Current Challenge -->
+            <div id="currentChallenge" class="challenge-section" style="display: none;">
+                <div class="challenge-card">
+                    <div class="challenge-header">
+                        <h3 id="challengeTitle">Thử Thách</h3>
+                        <div class="challenge-meta">
+                            <span class="difficulty-badge" id="challengeDifficulty">Dễ</span>
+                            <span class="algorithm-badge" id="challengeAlgorithm">Caesar</span>
+                        </div>
+                    </div>
+                    
+                    <div class="challenge-story">
+                        <p id="challengeStory">Câu chuyện thử thách...</p>
+                    </div>
+
+                    <div id="cipherDisplay" class="cipher-display" style="display: none;">
+                        <h4>Thông Điệp Mã Hóa:</h4>
+                        <div id="cipherText" class="cipher-text"></div>
+                    </div>
+
+                    <div id="challengeInput" class="challenge-input" style="display: none;">
+                        <div class="input-group">
+                            <input type="text" id="decryptionKey" placeholder="Nhập khóa giải mã..." 
+                                   style="min-width: 300px; width: 100%; padding: 15px; font-size: 16px;">
+                            <button id="submitAnswer" class="btn btn-success">
+                                <i class="fas fa-key"></i>
+                                Giải Mã
+                            </button>
+                        </div>
+                        <div class="challenge-actions">
+                            <button id="hintBtn" class="btn btn-info">
+                                <i class="fas fa-lightbulb"></i>
+                                Gợi Ý (<span id="hintsUsed">0</span>/3)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leaderboard Section -->
+        <section id="leaderboard" class="section">
+            <div class="leaderboard-header">
+                <h2><i class="fas fa-trophy"></i> Bảng Xếp Hạng</h2>
+            </div>
+            <div class="leaderboard-content">
+                <div class="leaderboard-item">
+                    <div class="rank">1</div>
+                    <div class="player-info">
+                        <div class="player-name">Smith</div>
+                        <div class="player-progress">Hoàn thành 4/4 level</div>
+                    </div>
+                    <div class="score">1100 điểm</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank">2</div>
+                    <div class="player-info">
+                        <div class="player-name">Detective Holmes</div>
+                        <div class="player-progress">Hoàn thành 3/4 level</div>
+                    </div>
+                    <div class="score">600 điểm</div>
+                </div>
+                <div class="leaderboard-item">
+                    <div class="rank">3</div>
+                    <div class="player-info">
+                        <div class="player-name">Agent Cooper</div>
+                        <div class="player-progress">Hoàn thành 2/4 level</div>
+                    </div>
+                    <div class="score">300 điểm</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-check-circle"></i> Thành Công!</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="successMessage">Chúc mừng!</p>
+                <div class="success-details">
+                    <p><strong>Thông điệp:</strong> <span id="successPlaintext"></span></p>
+                    <p><strong>Điểm thưởng:</strong> <span id="successPoints"></span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="nextLevelBtn" class="btn btn-primary">Tiếp Tục</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hint Modal -->
+    <div id="hintModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-lightbulb"></i> Gợi Ý</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="hintText">Gợi ý sẽ xuất hiện ở đây...</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Complete Modal -->
+    <div id="gameCompleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-trophy"></i> Hoàn Thành Game!</h3>
+            </div>
+            <div class="modal-body">
+                <div class="completion-animation">
+                    <div class="treasure-icon">🏆</div>
+                    <h4>Chúc mừng! Bạn đã tìm ra kho báu!</h4>
+                    <p>Tổng điểm: <span id="finalTotalScore">0</span></p>
+                    <p>Bạn đã hoàn thành tất cả thử thách và trở thành một thám tử mật mã học xuất sắc!</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="window.location.reload()">
+                    <i class="fas fa-redo"></i>
+                    Chơi Lại
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/game.js') }}"></script>
+</body>
+</html>
